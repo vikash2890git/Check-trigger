@@ -1,0 +1,22 @@
+rg="vik-rg"
+pipeline {
+    agent any
+
+
+    stages {
+        stage('List Azure Resources') {
+            steps {
+                
+               
+               // azureCLI commands: [[exportVariablesString: '', script: 'az account show'],[exportVariablesString: '', script: 'az vm list --resource-group vik-rg --output table']], principalCredentialId: 'c45a649c-d2e1-4c55-ac6f-e48829aa78e4'
+            
+                withCredentials([azureServicePrincipal('c45a649c-d2e1-4c55-ac6f-e48829aa78e4')]) {
+                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                     sh """az vm list --resource-group $rg --output table"""
+                }
+                
+            }
+        }
+    }
+}
+
